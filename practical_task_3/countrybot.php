@@ -29,15 +29,18 @@ class CountryBot
             $this->bot->sendMessage($content);
         }
         elseif($text > ''){
-            if($emoji = $this->getFlagEmoji($text)){
-                $content['text'] = $emoji;
-                $this->bot->sendMessage($content);
+            $countryCode = $this->getCountryCode($text);
+            if($countryCode){
+                if($emoji = $this->getFlagEmoji($countryCode)){
+                    $content['text'] = $emoji;
+                    $this->bot->sendMessage($content);
+                }
+                if($wikiPage = $this->getWikiPage($text)){
+                    $content['text'] = $wikiPage;
+                    $this->bot->sendMessage($content);
+                }
             }
-            if($wikiPage = $this->getWikiPage($text)){
-                $content['text'] = $wikiPage;
-                $this->bot->sendMessage($content);
-            }
-            if(!$wikiPage){
+            else{
                 $content['text'] = 'Страна не найдена';
                 $this->bot->sendMessage($content);
             }
@@ -51,13 +54,16 @@ class CountryBot
                 self::G_MAPS_CODE.$countryName
             ),1
         );
-        $code = $result['results'][0]['address_components'][0]['short_name'];
+        $code = null;
+        $addressData = $result['results'][0]['address_components'][0];
+        if(in_array('country', $addressData['types'])){
+            $code = $result['results'][0]['address_components'][0]['short_name'];
+        }
         return $code ? strtolower($code) : null;
     }
 
-    private function getFlagEmoji($countryName)
+    private function getFlagEmoji($countryCode)
     {
-        $countryCode = $this->getCountryCode($countryName);
         if($countryCode){
             $emojiPack = json_decode(
                 file_get_contents('emoji.json'),
