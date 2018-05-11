@@ -2,13 +2,13 @@
 
 include 'vendor/autoload.php';
 
-$bot_token = '554120614:AAFCVD86jnb_mac0rqZ-nFC2rCVz8nXkBr4';
+$bot_token = '';
 $telegram = new Telegram($bot_token);
 
 class CountryBot
 {
     const WIKI_API = 'https://ru.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=';
-    const G_MAPS_CODE = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDB6bgsOZd9KNSMMtzutM078vFiTpfcGlA&address=';
+    const G_MAPS_CODE = 'https://maps.googleapis.com/maps/api/geocode/json?key={}&address=';
 
     /**@var Telegram*/
     private $bot;
